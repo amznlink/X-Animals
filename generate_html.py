@@ -7,6 +7,8 @@ output_html = 'index.html'
 videos = sorted([f for f in os.listdir(video_dir) if f.endswith('.mp4')],
                 key=lambda x: os.path.getmtime(os.path.join(video_dir, x)), reverse=True)
 
+video_sources = [os.path.join(video_dir, video) for video in videos]
+
 html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,80 +23,75 @@ html_content = '''<!DOCTYPE html>
             overflow: hidden;
             scroll-behavior: smooth;
             background: black;
-        }
-        .video-container {
-            width: 100%;
-            height: 100vh;
-            position: relative;
-            scroll-snap-align: start;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        #video-list {
-            display: flex;
-            flex-direction: column;
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
+        .video-container {
+            width: 100%;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
         video {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
+            width: 100%;
             height: auto;
+        }
+        #video-list {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        .spacer {
+            height: 100vh;
+            scroll-snap-align: start;
         }
     </style>
 </head>
 <body>
 <div id="video-list">
+    <div class="spacer"></div>
 '''
 
-for i, video in enumerate(videos):
-    html_content += f'''
-    <div id="video{i+1}" class="video-container">
-        <video src="{video_dir}/{video}" id="video{i+1}-player" controls muted playsinline></video>
-    </div>
-    '''
+for i in range(len(video_sources)):
+    html_content += '<div class="spacer"></div>'
 
 html_content += '''
 </div>
+<div class="video-container">
+    <video id="main-video" controls muted autoplay playsinline></video>
+</div>
 <script>
-    const videos = document.querySelectorAll('video');
-    const containers = document.querySelectorAll('.video-container');
-    
-    const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5
-    };
+    const videoList = {video_sources};
+    let currentIndex = 0;
 
-    function handleIntersect(entries, observer) {
-        entries.forEach(entry => {
-            const video = entry.target.querySelector('video');
-            if (entry.isIntersecting) {
-                video.play();
-            } else {
-                video.pause();
-                video.currentTime = 0;
+    const videoElement = document.getElementById('main-video');
+    videoElement.src = videoList[currentIndex];
+
+    const spacers = document.querySelectorAll('.spacer');
+    spacers.forEach((spacer, index) => {
+        spacer.addEventListener('scroll', () => {
+            if (index !== currentIndex) {
+                videoElement.pause();
+                videoElement.currentTime = 0;
+                videoElement.src = videoList[index];
+                currentIndex = index;
+                videoElement.play();
             }
         });
-    }
-
-    const observer = new IntersectionObserver(handleIntersect, options);
-
-    containers.forEach(container => {
-        observer.observe(container);
     });
-
-    // Initial play
-    if (containers.length > 0) {
-        containers[0].querySelector('video').play();
-    }
 </script>
 </body>
 </html>
-'''
+'''.format(video_sources=video_sources)
 
 with open(output_html, 'w') as file:
     file.write(html_content)
