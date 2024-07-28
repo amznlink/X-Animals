@@ -4,15 +4,15 @@ import re
 import tweepy
 import youtube_dl
 
-# Twitter API credentials
-CONSUMER_KEY = 'wBUo1BIhObiOidW9oiciXEnw4'
-CONSUMER_SECRET = 'PhFBb17rBxBW1OPljpGFkbRGkAqi5jQiQnF08NETWBs1KtRVMZ'
-ACCESS_TOKEN = '1761871813699616768-lNYOWWIgm6zYhnDlL8oKIIXxEdeoyp'
-ACCESS_TOKEN_SECRET = 'aLDHNdDoKDCAhpxPnVT9he6Hce8qqyKwNnJjkjNH5e93S'
+# Twitter API credentials from environment variables
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 def get_tweet_urls(file_path):
