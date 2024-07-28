@@ -66,7 +66,7 @@ html_content += '''
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.5
+        threshold: .9
     };
 
     function handleIntersect(entries, observer) {
