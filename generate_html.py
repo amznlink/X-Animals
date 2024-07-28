@@ -10,33 +10,33 @@ html_content = '''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animals</title>
+    <title>Full Screen Video Scroller</title>
     <style>
-        body, html {
+        body, html {{
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
-        }
-        .video-container {
+        }}
+        .video-container {{
             width: 100%;
             height: 100vh;
             position: relative;
             scroll-snap-align: start;
-        }
-        #video-list {
+        }}
+        #video-list {{
             display: flex;
             flex-direction: column;
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
-        }
-        video {
+        }}
+        video {{
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
+        }}
     </style>
 </head>
 <body>
@@ -51,18 +51,18 @@ html_content = '''<!DOCTYPE html>
     const videos = {videos};
     let currentVideoIndex = 0;
 
-    function playVideo(index) {
+    function playVideo(index) {{
         videoPlayer.src = videos[index];
         videoPlayer.play();
-    }
+    }}
 
-    function handleScroll() {
+    function handleScroll() {{
         const index = Math.round(videoList.scrollTop / window.innerHeight);
-        if (index !== currentVideoIndex) {
+        if (index !== currentVideoIndex) {{
             currentVideoIndex = index;
             playVideo(currentVideoIndex);
-        }
-    }
+        }}
+    }}
 
     videoList.addEventListener('scroll', handleScroll);
 
@@ -70,18 +70,18 @@ html_content = '''<!DOCTYPE html>
     playVideo(currentVideoIndex);
 
     // Preload next video for smoother transitions
-    videoPlayer.addEventListener('ended', () => {
-        if (currentVideoIndex < videos.length - 1) {
+    videoPlayer.addEventListener('ended', () => {{
+        if (currentVideoIndex < videos.length - 1) {{
             currentVideoIndex++;
             playVideo(currentVideoIndex);
             videoList.scrollTop = currentVideoIndex * window.innerHeight;
-        }
-    });
+        }}
+    }});
 
     // Ensure the initial video is loaded and played on page load
-    window.onload = () => {
+    window.onload = () => {{
         playVideo(currentVideoIndex);
-    };
+    }};
 </script>
 </body>
 </html>
