@@ -1,30 +1,34 @@
-import requests
 import os
+import requests
+import re
 
-# Fetch the list of tweet URLs from the local file
 def get_tweet_urls(file_path):
     with open(file_path, 'r') as file:
         urls = file.readlines()
     return [url.strip() for url in urls if url.strip()]
 
-# Download videos from the tweet URLs and save them to a directory
-def download_videos(tweet_urls, download_path):
+def fetch_video_url(tweet_url):
+    oembed_url = f"https://publish.twitter.com/oembed?url={tweet_url}"
+    response = requests.get(oembed_url)
+    if response.status_code != 200:
+        print(f"Failed to fetch oEmbed data for {tweet_url}")
+        return None
+    oembed_data = response.json()
+    html_content = oembed_data['html']
+    video_url = re.search(r'https://video.twimg.com/[^"]+', html_content)
+    return video_url.group(0) if video_url else None
+
+def download_video(video_url, download_path):
     if not os.path.exists(download_path):
         os.makedirs(download_path)
-    
-    video_paths = []
-    for url in tweet_urls:
-        response = requests.get(url, stream=True)
-        video_filename = os.path.join(download_path, url.split("/")[-1] + ".mp4")
-        with open(video_filename, 'wb') as video_file:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    video_file.write(chunk)
-        video_paths.append(video_filename)
-    
-    return video_paths
+    video_filename = os.path.join(download_path, video_url.split("/")[-1])
+    response = requests.get(video_url, stream=True)
+    with open(video_filename, 'wb') as video_file:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                video_file.write(chunk)
+    return video_filename
 
-# Generate the HTML file to display videos with fullscreen and autoplay
 def generate_html(video_paths):
     html_content = """
     <!DOCTYPE html>
@@ -106,21 +110,21 @@ def generate_html(video_paths):
     """
     return html_content
 
-# Main function
 def main():
     file_path = 'tweet_urls.txt'
     download_path = 'videos'
     
-    # Get the list of URLs from the file
     tweet_urls = get_tweet_urls(file_path)
+    video_paths = []
 
-    # Download videos
-    video_paths = download_videos(tweet_urls, download_path)
+    for tweet_url in tweet_urls:
+        video_url = fetch_video_url(tweet_url)
+        if video_url:
+            video_path = download_video(video_url, download_path)
+            video_paths.append(video_path)
 
-    # Generate HTML
     html_content = generate_html(video_paths)
     
-    # Write HTML to file
     with open('index.html', 'w') as file:
         file.write(html_content)
 
