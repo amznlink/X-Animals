@@ -2,7 +2,6 @@ import os
 
 video_dir = 'videos'
 output_html = 'index.html'
-ad_url = 'https://example.com'  # Replace with your actual ad URL
 
 videos = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
 
@@ -20,7 +19,7 @@ html_content = '''<!DOCTYPE html>
             overflow: hidden;
             scroll-behavior: smooth;
         }}
-        .video-container, .ad-container {{
+        .video-container {{
             width: 100%;
             height: 100vh;
             position: relative;
@@ -41,11 +40,6 @@ html_content = '''<!DOCTYPE html>
             height: 100%;
             object-fit: cover;
         }}
-        iframe {{
-            width: 100%;
-            height: 50%;
-            border: none;
-        }}
     </style>
 </head>
 <body>
@@ -58,12 +52,6 @@ for i, video in enumerate(videos):
         <video src="{video_dir}/{video}" id="video{i+1}-player" muted playsinline></video>
     </div>
     '''
-    if (i + 1) % 10 == 0:
-        html_content += f'''
-        <div class="ad-container">
-            <iframe src="{ad_url}"></iframe>
-        </div>
-        '''
 
 html_content += '''
 </div>
