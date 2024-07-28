@@ -9,20 +9,27 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
         }
-        .screen {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .content {
+            flex: 1;
+            overflow: auto;
+            padding: 10px;
+            background-color: white;
         }
     </style>
 </head>
 <body>
-    <iframe id="browser" class="screen" src=""></iframe>
+    <div class="content" id="content">
+        <!-- Placeholder for content -->
+    </div>
 
     <script>
         let urls = [];
         let currentIndex = 0;
+        const proxy = 'https://corsproxy.io/?';
 
         async function loadUrls() {
             const response = await fetch('urls.txt');
@@ -33,10 +40,24 @@
             }
         }
 
+        async function loadContent(url) {
+            const proxyUrl = `${proxy}${encodeURIComponent(url)}`;
+            try {
+                const response = await fetch(proxyUrl);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                const text = await response.text();
+                document.getElementById('content').innerHTML = text;
+            } catch (error) {
+                document.getElementById('content').innerHTML = `<p>Failed to load content: ${error.message}</p>`;
+            }
+        }
+
         function navigateToUrl(index) {
             if (index >= 0 && index < urls.length) {
                 currentIndex = index;
-                document.getElementById('browser').src = `https://corsproxy.io/?${encodeURIComponent(urls[currentIndex])}`;
+                loadContent(urls[currentIndex]);
             }
         }
 
