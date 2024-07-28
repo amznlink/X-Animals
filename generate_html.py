@@ -12,14 +12,14 @@ html_content = '''<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animals</title>
     <style>
-        body, html {{
+        body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
-        }}
-        .video-container {{
+        }
+        .video-container {
             width: 100%;
             height: 100vh;
             position: relative;
@@ -27,19 +27,19 @@ html_content = '''<!DOCTYPE html>
             display: flex;
             justify-content: center;
             align-items: center;
-        }}
-        #video-list {{
+        }
+        #video-list {
             display: flex;
             flex-direction: column;
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
-        }}
-        video {{
+        }
+        video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }}
+        }
     </style>
 </head>
 <body>
@@ -57,31 +57,36 @@ html_content += '''
 </div>
 <script>
     const videos = document.querySelectorAll('video');
-    let currentVideoIndex = 0;
+    
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0
+    };
 
-    function playVideo(index) {{
-        videos.forEach((video, idx) => {{
-            if (idx === index) {{
-                video.play();
-            }} else {{
-                video.pause();
-                video.currentTime = 0;
-            }}
-        }});
-    }}
+    function handleIntersect(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.requestFullscreen();
+                entry.target.play();
+            } else {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+                entry.target.pause();
+                entry.target.currentTime = 0;
+            }
+        });
+    }
 
-    function handleScroll() {{
-        const index = Math.round(window.scrollY / window.innerHeight);
-        if (index !== currentVideoIndex) {{
-            currentVideoIndex = index;
-            playVideo(currentVideoIndex);
-        }}
-    }}
+    const observer = new IntersectionObserver(handleIntersect, options);
 
-    window.addEventListener('scroll', handleScroll);
+    videos.forEach(video => {
+        observer.observe(video);
+    });
 
-    // Initial play
-    playVideo(currentVideoIndex);
+    // Scroll to the top to ensure the first video plays initially
+    window.scrollTo(0, 0);
 </script>
 </body>
 </html>
