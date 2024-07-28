@@ -18,6 +18,7 @@ html_content = '''<!DOCTYPE html>
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
+            background: black;
         }
         .video-container {
             width: 100%;
@@ -40,9 +41,9 @@ html_content = '''<!DOCTYPE html>
             height: 100vh;
         }
         video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
     </style>
 </head>
