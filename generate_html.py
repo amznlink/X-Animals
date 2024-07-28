@@ -1,19 +1,12 @@
 import os
 import requests
-import re
 import tweepy
-import youtube_dl
 
 # Twitter API credentials from environment variables
-CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+BEARER_TOKEN = os.getenv('BEARER_TOKEN')
 
 # Authenticate to Twitter
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
+client = tweepy.Client(bearer_token=BEARER_TOKEN)
 
 def get_tweet_urls(file_path):
     with open(file_path, 'r') as file:
@@ -22,15 +15,15 @@ def get_tweet_urls(file_path):
 
 def fetch_video_url(tweet_url):
     tweet_id = tweet_url.split('/')[-1]
-    tweet = api.get_status(tweet_id, tweet_mode='extended')
+    tweet = client.get_tweet(tweet_id, expansions=["attachments.media_keys"], media_fields=["type", "url", "variants"])
 
-    if 'media' in tweet.entities:
-        media = tweet.entities['media']
-        for media_item in media:
-            if media_item['type'] == 'video':
-                return media_item['video_info']['variants'][0]['url']
-            elif media_item['type'] == 'animated_gif':
-                return media_item['video_info']['variants'][0]['url']
+    if not tweet.data:
+        return None
+
+    media = tweet.includes.get('media', [])
+    for media_item in media:
+        if media_item["type"] == "video" or media_item["type"] == "animated_gif":
+            return media_item["variants"][0]["url"]
     return None
 
 def download_video(video_url, download_path):
