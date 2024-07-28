@@ -17,13 +17,13 @@ html_content = '''<!DOCTYPE html>
             padding: 0;
             height: 100%;
             overflow: hidden;
+            scroll-behavior: smooth;
         }
         .video-container {
             width: 100%;
             height: 100vh;
             position: relative;
             scroll-snap-align: start;
-            transition: transform 2s;
         }
         #video-list {
             display: flex;
@@ -41,48 +41,51 @@ html_content = '''<!DOCTYPE html>
 </head>
 <body>
 <div id="video-list">
-'''
-
-for i, video in enumerate(videos):
-    html_content += f'''
-    <div id="video{i+1}" class="video-container">
-        <video src="{video_dir}/{video}" id="video{i+1}-player" controls></video>
+    <div class="video-container">
+        <video id="video-player" controls></video>
     </div>
-    '''
-
-html_content += '''
 </div>
-    <script>
-        const videos = document.querySelectorAll('video');
-        let currentVideoIndex = 0;
-        const videoList = document.getElementById('video-list');
+<script>
+    const videoList = document.getElementById('video-list');
+    const videoPlayer = document.getElementById('video-player');
+    const videos = {videos};
+    let currentVideoIndex = 0;
 
-        function playVideo(index) {
-            videos.forEach((video, idx) => {
-                if (idx === index) {
-                    video.play();
-                } else {
-                    video.pause();
-                    video.currentTime = 0;
-                }
-            });
+    function playVideo(index) {
+        videoPlayer.src = videos[index];
+        videoPlayer.play();
+    }
+
+    function handleScroll() {
+        const index = Math.round(videoList.scrollTop / window.innerHeight);
+        if (index !== currentVideoIndex) {
+            currentVideoIndex = index;
+            playVideo(currentVideoIndex);
         }
+    }
 
-        videoList.addEventListener('scroll', () => {
-            const index = Math.round(videoList.scrollTop / window.innerHeight);
-            if (index !== currentVideoIndex) {
-                currentVideoIndex = index;
-                playVideo(currentVideoIndex);
-                videoList.style.transform = `translateY(-${currentVideoIndex * window.innerHeight}px)`;
-            }
-        });
+    videoList.addEventListener('scroll', handleScroll);
 
-        // Initial play
+    // Initial play
+    playVideo(currentVideoIndex);
+
+    // Preload next video for smoother transitions
+    videoPlayer.addEventListener('ended', () => {
+        if (currentVideoIndex < videos.length - 1) {
+            currentVideoIndex++;
+            playVideo(currentVideoIndex);
+            videoList.scrollTop = currentVideoIndex * window.innerHeight;
+        }
+    });
+
+    // Ensure the initial video is loaded and played on page load
+    window.onload = () => {
         playVideo(currentVideoIndex);
-    </script>
+    };
+</script>
 </body>
 </html>
-'''
+'''.format(videos=[f'{video_dir}/{video}' for video in videos])
 
 with open(output_html, 'w') as file:
     file.write(html_content)
