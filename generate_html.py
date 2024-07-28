@@ -30,10 +30,6 @@ html_content = '''<!DOCTYPE html>
             display: flex;
             justify-content: center;
             align-items: center;
-            visibility: hidden;
-        }
-        .video-container.visible {
-            visibility: visible;
         }
         #video-list {
             display: flex;
@@ -69,17 +65,15 @@ html_content += '''
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 1.0
+        threshold: 0.5
     };
 
     function handleIntersect(entries, observer) {
         entries.forEach(entry => {
             const video = entry.target.querySelector('video');
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
                 video.play();
             } else {
-                entry.target.classList.remove('visible');
                 video.pause();
                 video.currentTime = 0;
             }
@@ -94,7 +88,6 @@ html_content += '''
 
     // Initial play
     if (containers.length > 0) {
-        containers[0].classList.add('visible');
         containers[0].querySelector('video').play();
     }
 </script>
