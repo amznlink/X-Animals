@@ -36,8 +36,7 @@
         function navigateToUrl(index) {
             if (index >= 0 && index < urls.length) {
                 currentIndex = index;
-                const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(urls[currentIndex])}`;
-                document.getElementById('browser').src = proxiedUrl;
+                document.getElementById('browser').src = `https://corsproxy.io/?${encodeURIComponent(urls[currentIndex])}`;
             }
         }
 
