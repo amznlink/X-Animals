@@ -3,78 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Video Scroller</title>
+    <title>Animals</title>
     <style>
-        body, html {
+        body, html {{
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
-        }
-        .video-container {
+        }}
+        .video-container, .ad-container {{
             width: 100%;
             height: 100vh;
             position: relative;
             scroll-snap-align: start;
-        }
-        #video-list {
+        }}
+        #video-list {{
             display: flex;
             flex-direction: column;
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
-        }
-        video {
+        }}
+        video {{
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
+        }}
+        iframe {{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }}
     </style>
 </head>
 <body>
 <div id="video-list">
-    <div class="video-container">
-        <video id="video-player" controls></video>
+
+    <div id="video1" class="video-container">
+        <video src="videos/VID_20240728_171956_124.mp4" id="video1-player" controls></video>
     </div>
+    
+    <div id="video2" class="video-container">
+        <video src="videos/VID_20240308_220849_786.mp4" id="video2-player" controls></video>
+    </div>
+    
+    <div id="video3" class="video-container">
+        <video src="videos/VID_20240728_172229_491.mp4" id="video3-player" controls></video>
+    </div>
+    
+    <div id="video4" class="video-container">
+        <video src="videos/VID_20240728_171300_900.mp4" id="video4-player" controls></video>
+    </div>
+    
+    <div id="video5" class="video-container">
+        <video src="videos/VID_20240728_173203_590.mp4" id="video5-player" controls></video>
+    </div>
+    
+    <div id="video6" class="video-container">
+        <video src="videos/VID_20240728_171412_718.mp4" id="video6-player" controls></video>
+    </div>
+    
 </div>
 <script>
-    const videoList = document.getElementById('video-list');
-    const videoPlayer = document.getElementById('video-player');
-    const videos = ['videos/VID_20240728_171956_124.mp4', 'videos/VID_20240308_220849_786.mp4', 'videos/VID_20240728_172229_491.mp4', 'videos/VID_20240728_171300_900.mp4', 'videos/VID_20240728_171412_718.mp4'];
+    const videos = document.querySelectorAll('video');
     let currentVideoIndex = 0;
 
     function playVideo(index) {
-        videoPlayer.src = videos[index];
-        videoPlayer.play();
+        videos.forEach((video, idx) => {
+            if (idx === index) {
+                video.play();
+            } else {
+                video.pause();
+                video.currentTime = 0;
+            }
+        });
     }
 
-    function handleScroll() {
-        const index = Math.round(videoList.scrollTop / window.innerHeight);
+    window.addEventListener('scroll', () => {
+        const index = Math.round(window.scrollY / window.innerHeight);
         if (index !== currentVideoIndex) {
             currentVideoIndex = index;
             playVideo(currentVideoIndex);
         }
-    }
-
-    videoList.addEventListener('scroll', handleScroll);
+    });
 
     // Initial play
     playVideo(currentVideoIndex);
-
-    // Preload next video for smoother transitions
-    videoPlayer.addEventListener('ended', () => {
-        if (currentVideoIndex < videos.length - 1) {
-            currentVideoIndex++;
-            playVideo(currentVideoIndex);
-            videoList.scrollTop = currentVideoIndex * window.innerHeight;
-        }
-    });
-
-    // Ensure the initial video is loaded and played on page load
-    window.onload = () => {
-        playVideo(currentVideoIndex);
-    };
 </script>
 </body>
 </html>
