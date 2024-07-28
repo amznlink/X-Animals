@@ -2,6 +2,7 @@ import os
 
 video_dir = 'videos'
 output_html = 'index.html'
+ad_url = 'https://x.com'  # Replace with your actual ad URL
 
 videos = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
 
@@ -10,7 +11,7 @@ html_content = '''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Video Scroller</title>
+    <title>Animals</title>
     <style>
         body, html {{
             margin: 0;
@@ -19,7 +20,7 @@ html_content = '''<!DOCTYPE html>
             overflow: hidden;
             scroll-behavior: smooth;
         }}
-        .video-container {{
+        .video-container, .ad-container {{
             width: 100%;
             height: 100vh;
             position: relative;
@@ -37,51 +38,57 @@ html_content = '''<!DOCTYPE html>
             height: 100%;
             object-fit: cover;
         }}
+        iframe {{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }}
     </style>
 </head>
 <body>
 <div id="video-list">
-    <div class="video-container">
-        <video id="video-player" controls></video>
+'''
+
+for i, video in enumerate(videos):
+    html_content += f'''
+    <div id="video{i+1}" class="video-container">
+        <video src="{video_dir}/{video}" id="video{i+1}-player" controls></video>
     </div>
+    '''
+    if (i + 1) % 10 == 0:
+        html_content += f'''
+        <div class="ad-container">
+            <iframe src="{ad_url}"></iframe>
+        </div>
+        '''
+
+html_content += '''
 </div>
 <script>
-    const videoList = document.getElementById('video-list');
-    const videoPlayer = document.getElementById('video-player');
-    const videos = {videos};
+    const videos = document.querySelectorAll('video');
     let currentVideoIndex = 0;
 
     function playVideo(index) {{
-        videoPlayer.src = videos[index];
-        videoPlayer.play();
+        videos.forEach((video, idx) => {{
+            if (idx === index) {{
+                video.play();
+            }} else {{
+                video.pause();
+                video.currentTime = 0;
+            }}
+        }});
     }}
 
-    function handleScroll() {{
-        const index = Math.round(videoList.scrollTop / window.innerHeight);
+    window.addEventListener('scroll', () => {{
+        const index = Math.round(window.scrollY / window.innerHeight);
         if (index !== currentVideoIndex) {{
             currentVideoIndex = index;
             playVideo(currentVideoIndex);
         }}
-    }}
-
-    videoList.addEventListener('scroll', handleScroll);
+    }});
 
     // Initial play
     playVideo(currentVideoIndex);
-
-    // Preload next video for smoother transitions
-    videoPlayer.addEventListener('ended', () => {{
-        if (currentVideoIndex < videos.length - 1) {{
-            currentVideoIndex++;
-            playVideo(currentVideoIndex);
-            videoList.scrollTop = currentVideoIndex * window.innerHeight;
-        }}
-    }});
-
-    // Ensure the initial video is loaded and played on page load
-    window.onload = () => {{
-        playVideo(currentVideoIndex);
-    }};
 </script>
 </body>
 </html>
