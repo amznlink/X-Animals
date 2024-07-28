@@ -1,6 +1,19 @@
 import os
 import requests
 import re
+import tweepy
+import youtube_dl
+
+# Twitter API credentials
+CONSUMER_KEY = 'wBUo1BIhObiOidW9oiciXEnw4'
+CONSUMER_SECRET = 'PhFBb17rBxBW1OPljpGFkbRGkAqi5jQiQnF08NETWBs1KtRVMZ'
+ACCESS_TOKEN = '1761871813699616768-lNYOWWIgm6zYhnDlL8oKIIXxEdeoyp'
+ACCESS_TOKEN_SECRET = 'aLDHNdDoKDCAhpxPnVT9he6Hce8qqyKwNnJjkjNH5e93S'
+
+# Authenticate to Twitter
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(CONSUMER_KEY, CONSUMER_SECRET)
+api = tweepy.API(auth)
 
 def get_tweet_urls(file_path):
     with open(file_path, 'r') as file:
@@ -8,26 +21,39 @@ def get_tweet_urls(file_path):
     return [url.strip() for url in urls if url.strip()]
 
 def fetch_video_url(tweet_url):
-    oembed_url = f"https://publish.twitter.com/oembed?url={tweet_url}"
-    response = requests.get(oembed_url)
-    if response.status_code != 200:
-        print(f"Failed to fetch oEmbed data for {tweet_url}")
-        return None
-    oembed_data = response.json()
-    html_content = oembed_data['html']
-    video_url = re.search(r'https://video.twimg.com/[^"]+', html_content)
-    return video_url.group(0) if video_url else None
+    tweet_id = tweet_url.split('/')[-1]
+    tweet = api.get_status(tweet_id, tweet_mode='extended')
+
+    if 'media' in tweet.entities:
+        media = tweet.entities['media']
+        for media_item in media:
+            if media_item['type'] == 'video':
+                return media_item['video_info']['variants'][0]['url']
+            elif media_item['type'] == 'animated_gif':
+                return media_item['video_info']['variants'][0]['url']
+    return None
 
 def download_video(video_url, download_path):
+    video_filename = os.path.join(download_path, video_url.split("/")[-1])
+    if os.path.exists(video_filename):
+        print(f"Video already exists: {video_filename}")
+        return video_filename
+    
     if not os.path.exists(download_path):
         os.makedirs(download_path)
-    video_filename = os.path.join(download_path, video_url.split("/")[-1])
+    
     response = requests.get(video_url, stream=True)
     with open(video_filename, 'wb') as video_file:
         for chunk in response.iter_content(chunk_size=1024):
             if chunk:
                 video_file.write(chunk)
     return video_filename
+
+def download_video_from_tweet(tweet_url):
+    video_url = fetch_video_url(tweet_url)
+    if video_url:
+        return download_video(video_url, 'videos')
+    return None
 
 def generate_html(video_paths):
     html_content = """
@@ -118,9 +144,8 @@ def main():
     video_paths = []
 
     for tweet_url in tweet_urls:
-        video_url = fetch_video_url(tweet_url)
-        if video_url:
-            video_path = download_video(video_url, download_path)
+        video_path = download_video_from_tweet(tweet_url)
+        if video_path:
             video_paths.append(video_path)
 
     html_content = generate_html(video_paths)
