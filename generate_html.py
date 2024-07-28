@@ -3,9 +3,7 @@ import os
 video_dir = 'videos'
 output_html = 'index.html'
 
-# Get a list of videos sorted by modification time (newest first)
-videos = sorted([f for f in os.listdir(video_dir) if f.endswith('.mp4')],
-                key=lambda x: os.path.getmtime(os.path.join(video_dir, x)), reverse=True)
+videos = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
 
 html_content = '''<!DOCTYPE html>
 <html lang="en">
@@ -28,6 +26,8 @@ html_content = '''<!DOCTYPE html>
             position: relative;
             scroll-snap-align: start;
             display: flex;
+            justify-content: center;
+            align-items: center;
             visibility: hidden;
         }
         .video-container.visible {
@@ -41,9 +41,9 @@ html_content = '''<!DOCTYPE html>
             height: 100vh;
         }
         video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -67,7 +67,7 @@ html_content += '''
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: .9
+        threshold: 1.0
     };
 
     function handleIntersect(entries, observer) {
