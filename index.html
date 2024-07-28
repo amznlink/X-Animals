@@ -11,6 +11,7 @@
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
+            background: black;
         }
         .video-container {
             width: 100%;
@@ -33,9 +34,9 @@
             height: 100vh;
         }
         video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -43,63 +44,71 @@
 <div id="video-list">
 
     <div id="video1" class="video-container">
-        <video src="videos/VID_20240728_181719_543.mp4" id="video1-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_184132_740.mp4" id="video1-player" controls muted playsinline></video>
     </div>
     
     <div id="video2" class="video-container">
-        <video src="videos/VID_20240728_171956_124.mp4" id="video2-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_184110_191.mp4" id="video2-player" controls muted playsinline></video>
     </div>
     
     <div id="video3" class="video-container">
-        <video src="videos/VID_20240728_180049_600.mp4" id="video3-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_182550_814.mp4" id="video3-player" controls muted playsinline></video>
     </div>
     
     <div id="video4" class="video-container">
-        <video src="videos/VID_20240728_181806_882.mp4" id="video4-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_182531_216.mp4" id="video4-player" controls muted playsinline></video>
     </div>
     
     <div id="video5" class="video-container">
-        <video src="videos/VID_20240728_182531_216.mp4" id="video5-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_182522_804.mp4" id="video5-player" controls muted playsinline></video>
     </div>
     
     <div id="video6" class="video-container">
-        <video src="videos/VID_20240308_220849_786.mp4" id="video6-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_182511_368.mp4" id="video6-player" controls muted playsinline></video>
     </div>
     
     <div id="video7" class="video-container">
-        <video src="videos/VID_20240728_182511_368.mp4" id="video7-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_182516_070.mp4" id="video7-player" controls muted playsinline></video>
     </div>
     
     <div id="video8" class="video-container">
-        <video src="videos/VID_20240728_182516_070.mp4" id="video8-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_181806_882.mp4" id="video8-player" controls muted playsinline></video>
     </div>
     
     <div id="video9" class="video-container">
-        <video src="videos/VID_20240728_172229_491.mp4" id="video9-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_181719_543.mp4" id="video9-player" controls muted playsinline></video>
     </div>
     
     <div id="video10" class="video-container">
-        <video src="videos/VID_20240728_171300_900.mp4" id="video10-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_180916_732.mp4" id="video10-player" controls muted playsinline></video>
     </div>
     
     <div id="video11" class="video-container">
-        <video src="videos/VID_20240728_173203_590.mp4" id="video11-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_180049_600.mp4" id="video11-player" controls muted playsinline></video>
     </div>
     
     <div id="video12" class="video-container">
-        <video src="videos/VID_20240728_182522_804.mp4" id="video12-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_173203_590.mp4" id="video12-player" controls muted playsinline></video>
     </div>
     
     <div id="video13" class="video-container">
-        <video src="videos/VID_20240728_182550_814.mp4" id="video13-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_172229_491.mp4" id="video13-player" controls muted playsinline></video>
     </div>
     
     <div id="video14" class="video-container">
-        <video src="videos/VID_20240728_180916_732.mp4" id="video14-player" controls muted playsinline></video>
+        <video src="videos/VID_20240728_171956_124.mp4" id="video14-player" controls muted playsinline></video>
     </div>
     
     <div id="video15" class="video-container">
         <video src="videos/VID_20240728_171412_718.mp4" id="video15-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video16" class="video-container">
+        <video src="videos/VID_20240728_171300_900.mp4" id="video16-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video17" class="video-container">
+        <video src="videos/VID_20240308_220849_786.mp4" id="video17-player" controls muted playsinline></video>
     </div>
     
 </div>
@@ -110,7 +119,7 @@
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.9
+        threshold: .9
     };
 
     function handleIntersect(entries, observer) {
