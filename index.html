@@ -20,6 +20,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            visibility: hidden;
+        }
+        .video-container.visible {
+            visibility: visible;
         }
         #video-list {
             display: flex;
@@ -39,78 +43,101 @@
 <div id="video-list">
 
     <div id="video1" class="video-container">
-        <video src="videos/VID_20240728_181719_543.mp4" id="video1-player" muted playsinline></video>
+        <video src="videos/VID_20240728_181719_543.mp4" id="video1-player" controls muted playsinline></video>
     </div>
     
     <div id="video2" class="video-container">
-        <video src="videos/VID_20240728_171956_124.mp4" id="video2-player" muted playsinline></video>
+        <video src="videos/VID_20240728_171956_124.mp4" id="video2-player" controls muted playsinline></video>
     </div>
     
     <div id="video3" class="video-container">
-        <video src="videos/VID_20240728_180049_600.mp4" id="video3-player" muted playsinline></video>
+        <video src="videos/VID_20240728_180049_600.mp4" id="video3-player" controls muted playsinline></video>
     </div>
     
     <div id="video4" class="video-container">
-        <video src="videos/VID_20240728_181806_882.mp4" id="video4-player" muted playsinline></video>
+        <video src="videos/VID_20240728_181806_882.mp4" id="video4-player" controls muted playsinline></video>
     </div>
     
     <div id="video5" class="video-container">
-        <video src="videos/VID_20240308_220849_786.mp4" id="video5-player" muted playsinline></video>
+        <video src="videos/VID_20240728_182531_216.mp4" id="video5-player" controls muted playsinline></video>
     </div>
     
     <div id="video6" class="video-container">
-        <video src="videos/VID_20240728_172229_491.mp4" id="video6-player" muted playsinline></video>
+        <video src="videos/VID_20240308_220849_786.mp4" id="video6-player" controls muted playsinline></video>
     </div>
     
     <div id="video7" class="video-container">
-        <video src="videos/VID_20240728_171300_900.mp4" id="video7-player" muted playsinline></video>
+        <video src="videos/VID_20240728_182511_368.mp4" id="video7-player" controls muted playsinline></video>
     </div>
     
     <div id="video8" class="video-container">
-        <video src="videos/VID_20240728_173203_590.mp4" id="video8-player" muted playsinline></video>
+        <video src="videos/VID_20240728_182516_070.mp4" id="video8-player" controls muted playsinline></video>
     </div>
     
     <div id="video9" class="video-container">
-        <video src="videos/VID_20240728_180916_732.mp4" id="video9-player" muted playsinline></video>
+        <video src="videos/VID_20240728_172229_491.mp4" id="video9-player" controls muted playsinline></video>
     </div>
     
     <div id="video10" class="video-container">
-        <video src="videos/VID_20240728_171412_718.mp4" id="video10-player" muted playsinline></video>
+        <video src="videos/VID_20240728_171300_900.mp4" id="video10-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video11" class="video-container">
+        <video src="videos/VID_20240728_173203_590.mp4" id="video11-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video12" class="video-container">
+        <video src="videos/VID_20240728_182522_804.mp4" id="video12-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video13" class="video-container">
+        <video src="videos/VID_20240728_182550_814.mp4" id="video13-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video14" class="video-container">
+        <video src="videos/VID_20240728_180916_732.mp4" id="video14-player" controls muted playsinline></video>
+    </div>
+    
+    <div id="video15" class="video-container">
+        <video src="videos/VID_20240728_171412_718.mp4" id="video15-player" controls muted playsinline></video>
     </div>
     
 </div>
 <script>
     const videos = document.querySelectorAll('video');
+    const containers = document.querySelectorAll('.video-container');
     
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 1.0
+        threshold: 0.5
     };
 
     function handleIntersect(entries, observer) {
         entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
             if (entry.isIntersecting) {
-                entry.target.requestFullscreen();
-                entry.target.play();
+                entry.target.classList.add('visible');
+                video.play();
             } else {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                }
-                entry.target.pause();
-                entry.target.currentTime = 0;
+                entry.target.classList.remove('visible');
+                video.pause();
+                video.currentTime = 0;
             }
         });
     }
 
     const observer = new IntersectionObserver(handleIntersect, options);
 
-    videos.forEach(video => {
-        observer.observe(video);
+    containers.forEach(container => {
+        observer.observe(container);
     });
 
-    // Scroll to the top to ensure the first video plays initially
-    window.scrollTo(0, 0);
+    // Initial play
+    if (containers.length > 0) {
+        containers[0].classList.add('visible');
+        containers[0].querySelector('video').play();
+    }
 </script>
 </body>
 </html>
