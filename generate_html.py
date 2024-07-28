@@ -55,7 +55,7 @@ html_content = '''<!DOCTYPE html>
 for i, video in enumerate(videos):
     html_content += f'''
     <div id="video{i+1}" class="video-container">
-        <video src="{video_dir}/{video}" id="video{i+1}-player" controls></video>
+        <video src="{video_dir}/{video}" id="video{i+1}-player" muted playsinline></video>
     </div>
     '''
     if (i + 1) % 10 == 0:
@@ -97,7 +97,7 @@ html_content += '''
 </script>
 </body>
 </html>
-'''.format(videos=[f'{video_dir}/{video}' for video in videos])
+'''
 
 with open(output_html, 'w') as file:
     file.write(html_content)
