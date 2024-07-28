@@ -30,14 +30,26 @@
             const text = await response.text();
             urls = text.split('\n').map(url => url.trim()).filter(url => url);
             if (urls.length > 0) {
-                document.getElementById('browser').src = proxy + urls[0];
+                navigateToUrl(0);
             }
         }
 
         function navigateToUrl(index) {
             if (index >= 0 && index < urls.length) {
                 currentIndex = index;
-                document.getElementById('browser').src = proxy + urls[currentIndex];
+                const proxiedUrl = `${proxy}${urls[currentIndex]}`;
+                fetch(proxiedUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'https://amznlink.github.io/X-Animals/',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(() => {
+                    document.getElementById('browser').src = proxiedUrl;
+                })
+                .catch(error => console.error('Error:', error));
             }
         }
 
