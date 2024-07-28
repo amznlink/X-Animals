@@ -2,7 +2,7 @@ import os
 
 video_dir = 'videos'
 output_html = 'index.html'
-ad_url = 'https://x.com'  # Replace with your actual ad URL
+ad_url = 'https://example.com'  # Replace with your actual ad URL
 
 videos = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
 
@@ -25,6 +25,9 @@ html_content = '''<!DOCTYPE html>
             height: 100vh;
             position: relative;
             scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }}
         #video-list {{
             display: flex;
@@ -40,7 +43,7 @@ html_content = '''<!DOCTYPE html>
         }}
         iframe {{
             width: 100%;
-            height: 100%;
+            height: 50%;
             border: none;
         }}
     </style>
@@ -79,13 +82,15 @@ html_content += '''
         }});
     }}
 
-    window.addEventListener('scroll', () => {{
+    function handleScroll() {{
         const index = Math.round(window.scrollY / window.innerHeight);
         if (index !== currentVideoIndex) {{
             currentVideoIndex = index;
             playVideo(currentVideoIndex);
         }}
-    }});
+    }}
+
+    window.addEventListener('scroll', handleScroll);
 
     // Initial play
     playVideo(currentVideoIndex);
