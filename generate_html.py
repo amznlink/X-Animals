@@ -27,6 +27,10 @@ html_content = '''<!DOCTYPE html>
             display: flex;
             justify-content: center;
             align-items: center;
+            visibility: hidden;
+        }
+        .video-container.visible {
+            visibility: visible;
         }
         #video-list {
             display: flex;
@@ -49,7 +53,7 @@ html_content = '''<!DOCTYPE html>
 for i, video in enumerate(videos):
     html_content += f'''
     <div id="video{i+1}" class="video-container">
-        <video src="{video_dir}/{video}" id="video{i+1}-player" muted playsinline></video>
+        <video src="{video_dir}/{video}" id="video{i+1}-player" controls muted playsinline></video>
     </div>
     '''
 
@@ -57,36 +61,39 @@ html_content += '''
 </div>
 <script>
     const videos = document.querySelectorAll('video');
+    const containers = document.querySelectorAll('.video-container');
     
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 1.0
+        threshold: 0.5
     };
 
     function handleIntersect(entries, observer) {
         entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
             if (entry.isIntersecting) {
-                entry.target.requestFullscreen();
-                entry.target.play();
+                entry.target.classList.add('visible');
+                video.play();
             } else {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                }
-                entry.target.pause();
-                entry.target.currentTime = 0;
+                entry.target.classList.remove('visible');
+                video.pause();
+                video.currentTime = 0;
             }
         });
     }
 
     const observer = new IntersectionObserver(handleIntersect, options);
 
-    videos.forEach(video => {
-        observer.observe(video);
+    containers.forEach(container => {
+        observer.observe(container);
     });
 
-    // Scroll to the top to ensure the first video plays initially
-    window.scrollTo(0, 0);
+    // Initial play
+    if (containers.length > 0) {
+        containers[0].classList.add('visible');
+        containers[0].querySelector('video').play();
+    }
 </script>
 </body>
 </html>
