@@ -3,7 +3,9 @@ import os
 video_dir = 'videos'
 output_html = 'index.html'
 
-videos = [f for f in os.listdir(video_dir) if f.endswith('.mp4')]
+# Get a list of videos sorted by modification time (newest first)
+videos = sorted([f for f in os.listdir(video_dir) if f.endswith('.mp4')],
+                key=lambda x: os.path.getmtime(os.path.join(video_dir, x)), reverse=True)
 
 html_content = '''<!DOCTYPE html>
 <html lang="en">
