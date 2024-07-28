@@ -23,7 +23,6 @@
     <script>
         let urls = [];
         let currentIndex = 0;
-        const proxy = 'https://corsproxy.io/?';
 
         async function loadUrls() {
             const response = await fetch('urls.txt');
@@ -37,7 +36,7 @@
         function navigateToUrl(index) {
             if (index >= 0 && index < urls.length) {
                 currentIndex = index;
-                const proxiedUrl = `${proxy}${encodeURIComponent(urls[currentIndex])}`;
+                const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(urls[currentIndex])}`;
                 document.getElementById('browser').src = proxiedUrl;
             }
         }
