@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animals</title>
     <style>
-        body, html {{
+        body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
-        }}
-        .video-container {{
+        }
+        .video-container {
             width: 100%;
             height: 100vh;
             position: relative;
@@ -20,84 +20,97 @@
             display: flex;
             justify-content: center;
             align-items: center;
-        }}
-        #video-list {{
+        }
+        #video-list {
             display: flex;
             flex-direction: column;
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
-        }}
-        video {{
+        }
+        video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }}
+        }
     </style>
 </head>
 <body>
 <div id="video-list">
 
     <div id="video1" class="video-container">
-        <video src="videos/VID_20240728_171956_124.mp4" id="video1-player" muted playsinline></video>
+        <video src="videos/VID_20240728_181719_543.mp4" id="video1-player" muted playsinline></video>
     </div>
     
     <div id="video2" class="video-container">
-        <video src="videos/VID_20240728_180049_600.mp4" id="video2-player" muted playsinline></video>
+        <video src="videos/VID_20240728_171956_124.mp4" id="video2-player" muted playsinline></video>
     </div>
     
     <div id="video3" class="video-container">
-        <video src="videos/VID_20240308_220849_786.mp4" id="video3-player" muted playsinline></video>
+        <video src="videos/VID_20240728_180049_600.mp4" id="video3-player" muted playsinline></video>
     </div>
     
     <div id="video4" class="video-container">
-        <video src="videos/VID_20240728_172229_491.mp4" id="video4-player" muted playsinline></video>
+        <video src="videos/VID_20240728_181806_882.mp4" id="video4-player" muted playsinline></video>
     </div>
     
     <div id="video5" class="video-container">
-        <video src="videos/VID_20240728_171300_900.mp4" id="video5-player" muted playsinline></video>
+        <video src="videos/VID_20240308_220849_786.mp4" id="video5-player" muted playsinline></video>
     </div>
     
     <div id="video6" class="video-container">
-        <video src="videos/VID_20240728_173203_590.mp4" id="video6-player" muted playsinline></video>
+        <video src="videos/VID_20240728_172229_491.mp4" id="video6-player" muted playsinline></video>
     </div>
     
     <div id="video7" class="video-container">
-        <video src="videos/VID_20240728_180916_732.mp4" id="video7-player" muted playsinline></video>
+        <video src="videos/VID_20240728_171300_900.mp4" id="video7-player" muted playsinline></video>
     </div>
     
     <div id="video8" class="video-container">
-        <video src="videos/VID_20240728_171412_718.mp4" id="video8-player" muted playsinline></video>
+        <video src="videos/VID_20240728_173203_590.mp4" id="video8-player" muted playsinline></video>
+    </div>
+    
+    <div id="video9" class="video-container">
+        <video src="videos/VID_20240728_180916_732.mp4" id="video9-player" muted playsinline></video>
+    </div>
+    
+    <div id="video10" class="video-container">
+        <video src="videos/VID_20240728_171412_718.mp4" id="video10-player" muted playsinline></video>
     </div>
     
 </div>
 <script>
     const videos = document.querySelectorAll('video');
-    let currentVideoIndex = 0;
+    
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0
+    };
 
-    function playVideo(index) {{
-        videos.forEach((video, idx) => {{
-            if (idx === index) {{
-                video.play();
-            }} else {{
-                video.pause();
-                video.currentTime = 0;
-            }}
-        }});
-    }}
+    function handleIntersect(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.requestFullscreen();
+                entry.target.play();
+            } else {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+                entry.target.pause();
+                entry.target.currentTime = 0;
+            }
+        });
+    }
 
-    function handleScroll() {{
-        const index = Math.round(window.scrollY / window.innerHeight);
-        if (index !== currentVideoIndex) {{
-            currentVideoIndex = index;
-            playVideo(currentVideoIndex);
-        }}
-    }}
+    const observer = new IntersectionObserver(handleIntersect, options);
 
-    window.addEventListener('scroll', handleScroll);
+    videos.forEach(video => {
+        observer.observe(video);
+    });
 
-    // Initial play
-    playVideo(currentVideoIndex);
+    // Scroll to the top to ensure the first video plays initially
+    window.scrollTo(0, 0);
 </script>
 </body>
 </html>
