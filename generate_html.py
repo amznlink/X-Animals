@@ -1,4 +1,5 @@
 import os
+import json
 
 video_dir = 'videos'
 output_html = 'index.html'
@@ -86,7 +87,7 @@ html_content += '''
 </script>
 </body>
 </html>
-'''.format(video_sources=video_sources)
+'''.replace('{video_sources}', json.dumps(video_sources))
 
 with open(output_html, 'w') as file:
     file.write(html_content)
