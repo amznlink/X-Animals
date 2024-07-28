@@ -23,9 +23,6 @@ html_content = '''<!DOCTYPE html>
             overflow: hidden;
             scroll-behavior: smooth;
             background: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         .video-container {
             width: 100%;
@@ -41,13 +38,12 @@ html_content = '''<!DOCTYPE html>
             width: 100%;
             height: auto;
         }
-        #video-list {
+        #scroll-container {
             height: 100vh;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
+            z-index: 1;
             width: 100%;
         }
         .spacer {
@@ -57,7 +53,7 @@ html_content = '''<!DOCTYPE html>
     </style>
 </head>
 <body>
-<div id="video-list">
+<div id="scroll-container">
     <div class="spacer"></div>
 '''
 
@@ -76,17 +72,16 @@ html_content += '''
     const videoElement = document.getElementById('main-video');
     videoElement.src = videoList[currentIndex];
 
-    const spacers = document.querySelectorAll('.spacer');
-    spacers.forEach((spacer, index) => {
-        spacer.addEventListener('scroll', () => {
-            if (index !== currentIndex) {
-                videoElement.pause();
-                videoElement.currentTime = 0;
-                videoElement.src = videoList[index];
-                currentIndex = index;
-                videoElement.play();
-            }
-        });
+    const scrollContainer = document.getElementById('scroll-container');
+    scrollContainer.addEventListener('scroll', () => {
+        const index = Math.floor(scrollContainer.scrollTop / window.innerHeight);
+        if (index !== currentIndex && index < videoList.length) {
+            videoElement.pause();
+            videoElement.currentTime = 0;
+            videoElement.src = videoList[index];
+            currentIndex = index;
+            videoElement.play();
+        }
     });
 </script>
 </body>
