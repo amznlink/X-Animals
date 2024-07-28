@@ -28,8 +28,6 @@ html_content = '''<!DOCTYPE html>
             position: relative;
             scroll-snap-align: start;
             display: flex;
-            justify-content: center;
-            align-items: center;
             visibility: hidden;
         }
         .video-container.visible {
