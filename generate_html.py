@@ -24,6 +24,10 @@ html_content = '''<!DOCTYPE html>
             overflow: hidden;
             scroll-behavior: smooth;
             background: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .video-container {
             width: 100%;
@@ -34,8 +38,7 @@ html_content = '''<!DOCTYPE html>
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1;
-            pointer-events: none;
+            z-index: 2;
         }
         video {
             width: 100%;
@@ -46,9 +49,11 @@ html_content = '''<!DOCTYPE html>
             height: 100vh;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
-            position: relative;
-            z-index: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            z-index: 1;
         }
         .spacer {
             height: 100vh;
