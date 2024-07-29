@@ -22,7 +22,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
-    - name: Generate HTML
+    - name: Generate HTML and JSON
       run: |
         python generate_html.py
 
@@ -30,8 +30,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add index.html
-        git commit -m "Auto-generated updated index.html"
+        git add video_list.json
+        git commit -m "Auto-generated updated index.html and video_list.json"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
