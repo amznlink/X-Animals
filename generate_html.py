@@ -64,7 +64,7 @@ for i in range(len(video_sources)):
 html_content += '''
 </div>
 <div class="video-container">
-    <video id="main-video" controls muted autoplay playsinline></video>
+    <video id="main-video" controls controlsList="nodownload" muted autoplay playsinline></video>
 </div>
 <script>
     const videoList = {video_sources};
