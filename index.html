@@ -52,7 +52,7 @@
                 videoElement.src = videoUrl;
                 videoElement.controls = true;
                 videoElement.controlsList = 'nodownload';
-                videoElement.muted = true;
+                videoElement.muted = false;
                 videoElement.autoplay = false;
                 videoElement.playsInline = true;
 
@@ -71,7 +71,7 @@
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.play();
+                        entry.target.pause();
                     } else {
                         entry.target.pause();
                         entry.target.currentTime = 0; // Reset video to start
