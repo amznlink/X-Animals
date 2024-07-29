@@ -34,6 +34,7 @@ html_content = '''<!DOCTYPE html>
             position: fixed;
             top: 0;
             left: 0;
+            z-index: 2;
         }
         video {
             width: 100%;
