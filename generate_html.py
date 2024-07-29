@@ -34,18 +34,20 @@ html_content = '''<!DOCTYPE html>
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 2;
+            z-index: 1;
+            pointer-events: none;
         }
         video {
             width: 100%;
             height: auto;
+            pointer-events: auto;
         }
         #scroll-container {
             height: 100vh;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             position: relative;
-            z-index: 1;
+            z-index: 0;
             width: 100%;
         }
         .spacer {
